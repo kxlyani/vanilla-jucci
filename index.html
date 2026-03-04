@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>M A R K E T</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── Navbar ──────────────────────────────────────────── -->
+  <nav id="navbar" class="over-hero">
+    <div class="nav-inner">
+      <a class="nav-logo" onclick="goTo('home')">M A R K E T</a>
+      <div class="nav-links">
+        <a onclick="goTo('collection')">Collection</a>
+        <a onclick="goTo('campaign')">Campaign</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ════════════════════════════════════════════════════════
+       PAGE: HOME
+  ════════════════════════════════════════════════════════ -->
+  <div id="page-home" class="page active">
+
+    <!-- Hero -->
+    <section id="hero-section">
+      <div class="hero-content">
+        <h1>New Season</h1>
+        <p>An exploration of modern luxury</p>
+        <button class="btn-outline" onclick="goTo('collection')">Explore Collection</button>
+      </div>
+    </section>
+
+    <!-- Collection teaser -->
+    <section id="collection-section">
+      <div class="collection-left reveal-left">
+        <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=900&q=80" alt="Collection" />
+      </div>
+      <div class="collection-right reveal-right delay-1">
+        <h2>The Collection</h2>
+        <p>A refined balance of heritage and modernity. Designed for those who define luxury on their own terms.</p>
+        <a class="underline-link" onclick="goTo('collection')">View All</a>
+      </div>
+    </section>
+
+    <!-- Market grid -->
+    <section id="market-section">
+      <h2 class="reveal">Market Selection</h2>
+      <div class="market-grid" id="market-grid-home"></div>
+    </section>
+
+    <!-- Campaign teaser -->
+    <section id="campaign-section">
+      <div class="campaign-image reveal-left">
+        <img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=900&q=80" alt="Campaign" />
+      </div>
+      <div class="campaign-content reveal-right delay-1">
+        <span class="campaign-label">Campaign</span>
+        <h2>The Art of Modern Elegance</h2>
+        <p>Rooted in craftsmanship and driven by contemporary expression, MARKET explores a vision of fashion that transcends seasons. Each piece is designed with intention, confidence, and quiet luxury.</p>
+        <p>This campaign reflects a dialogue between heritage and innovation — where silhouettes speak softly, yet leave a lasting impression.</p>
+        <a class="underline-link" onclick="goTo('campaign')">See Campaign</a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-top">
+        <div class="footer-brand">
+          <span class="logo-text">M A R K E T</span>
+          <p>Defining modern luxury through refined craftsmanship and contemporary vision. Every piece is a statement of quiet elegance.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <ul>
+            <li><a onclick="goTo('collection')">New Arrivals</a></li>
+            <li><a onclick="goTo('collection')">Women</a></li>
+            <li><a onclick="goTo('collection')">Men</a></li>
+            <li><a onclick="goTo('collection')">Accessories</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>About</h4>
+          <ul>
+            <li><a onclick="goTo('campaign')">Campaign</a></li>
+            <li><a>Our Story</a></li>
+            <li><a>Sustainability</a></li>
+            <li><a>Press</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a>Contact</a></li>
+            <li><a>Shipping &amp; Returns</a></li>
+            <li><a>Size Guide</a></li>
+            <li><a>FAQ</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2025 Market. All rights reserved.</span>
+        <span>Privacy · Terms · Cookies</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       PAGE: COLLECTION
+  ════════════════════════════════════════════════════════ -->
+  <div id="page-collection" class="page">
+    <div class="collection-standalone">
+
+      <!-- Header banner -->
+      <section class="collection-page-hero">
+        <div class="overlay"></div>
+        <div class="hero-text">
+          <span>Spring — Summer 2025</span>
+          <h1>The Collection</h1>
+        </div>
+      </section>
+
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <span class="filter-label">Filter:</span>
+        <button class="filter-btn active" data-cat="All"         onclick="filterProducts(this)">All</button>
+        <button class="filter-btn"        data-cat="Women"       onclick="filterProducts(this)">Women</button>
+        <button class="filter-btn"        data-cat="Men"         onclick="filterProducts(this)">Men</button>
+        <button class="filter-btn"        data-cat="Accessories" onclick="filterProducts(this)">Accessories</button>
+      </div>
+
+      <!-- Products grid -->
+      <section class="collection-grid-section">
+        <div class="market-grid" id="collection-grid"></div>
+      </section>
+
+      <!-- Footer -->
+      <footer>
+        <div class="footer-top">
+          <div class="footer-brand">
+            <span class="logo-text">M A R K E T</span>
+            <p>Defining modern luxury through refined craftsmanship and contemporary vision.</p>
+          </div>
+          <div class="footer-col">
+            <h4>Shop</h4>
+            <ul>
+              <li><a onclick="goTo('collection')">New Arrivals</a></li>
+              <li><a onclick="goTo('collection')">Women</a></li>
+              <li><a onclick="goTo('collection')">Men</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>About</h4>
+            <ul>
+              <li><a onclick="goTo('campaign')">Campaign</a></li>
+              <li><a>Our Story</a></li>
+              <li><a>Sustainability</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Support</h4>
+            <ul>
+              <li><a>Contact</a></li>
+              <li><a>Shipping &amp; Returns</a></li>
+              <li><a>FAQ</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2025 Market. All rights reserved.</span>
+          <span>Privacy · Terms · Cookies</span>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       PAGE: CAMPAIGN
+  ════════════════════════════════════════════════════════ -->
+  <div id="page-campaign" class="page">
+    <div class="campaign-standalone">
+
+      <!-- Hero banner -->
+      <section class="campaign-page-hero">
+        <div class="overlay"></div>
+        <div class="hero-text">
+          <span>Campaign 2025</span>
+          <h1>The Art of Modern Elegance</h1>
+          <p>A vision of fashion that transcends seasons — rooted in craftsmanship, driven by contemporary expression.</p>
+        </div>
+      </section>
+
+      <!-- Campaign body -->
+      <section class="campaign-body">
+
+        <!-- Row 1: image left, text right -->
+        <div class="campaign-row">
+          <div class="img-col reveal-left">
+            <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=900&q=80" alt="Campaign 1" />
+          </div>
+          <div class="text-col reveal-right delay-1">
+            <span class="chapter-label">Chapter One</span>
+            <h2>Heritage &amp; Innovation</h2>
+            <p>Rooted in craftsmanship and driven by contemporary expression, MARKET explores a vision of fashion that transcends seasons. Each piece is designed with intention, confidence, and quiet luxury.</p>
+            <p>This campaign reflects a dialogue between heritage and innovation — where silhouettes speak softly, yet leave a lasting impression.</p>
+          </div>
+        </div>
+
+        <!-- Row 2: text left, image right -->
+        <div class="campaign-row">
+          <div class="text-col reveal-left">
+            <span class="chapter-label">Chapter Two</span>
+            <h2>The Quiet Luxury</h2>
+            <p>Effortless elegance is not about excess — it is about precision. About choosing the right cut, the perfect fabric, the exact shade that speaks without shouting. This is what MARKET stands for.</p>
+            <p>Every garment tells a story. Every detail is intentional. Every silhouette is sculpted to move with you through the world.</p>
+          </div>
+          <div class="img-col reveal-right delay-1">
+            <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=900&q=80" alt="Campaign 2" />
+          </div>
+        </div>
+
+        <!-- Full-width image -->
+        <div class="campaign-full-img reveal">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80" alt="Campaign full" />
+        </div>
+
+        <!-- Closing CTA -->
+        <div class="campaign-closing reveal">
+          <span class="section-label">The Vision</span>
+          <h2>Fashion as Language</h2>
+          <p>We believe clothing is more than fabric and thread — it is the grammar of self-expression. MARKET gives you the vocabulary to speak your truth in every room you enter.</p>
+          <button class="btn-outline dark" onclick="goTo('collection')">Shop the Collection</button>
+        </div>
+
+      </section>
+
+      <!-- Footer -->
+      <footer>
+        <div class="footer-top">
+          <div class="footer-brand">
+            <span class="logo-text">M A R K E T</span>
+            <p>Defining modern luxury through refined craftsmanship and contemporary vision.</p>
+          </div>
+          <div class="footer-col">
+            <h4>Shop</h4>
+            <ul>
+              <li><a onclick="goTo('collection')">New Arrivals</a></li>
+              <li><a onclick="goTo('collection')">Women</a></li>
+              <li><a onclick="goTo('collection')">Men</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>About</h4>
+            <ul>
+              <li><a onclick="goTo('campaign')">Campaign</a></li>
+              <li><a>Our Story</a></li>
+              <li><a>Sustainability</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Support</h4>
+            <ul>
+              <li><a>Contact</a></li>
+              <li><a>Shipping &amp; Returns</a></li>
+              <li><a>FAQ</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2025 Market. All rights reserved.</span>
+          <span>Privacy · Terms · Cookies</span>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
