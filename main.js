@@ -103,7 +103,7 @@ function renderCartDrawer() {
       <span>Total</span>
       <span>${formatPrice(total)}</span>
     </div>
-    <button class="btn-checkout">Proceed to Checkout</button>
+    <button class="btn-checkout" onclick="proceedToCheckout()">Proceed to Checkout</button>
     <button class="btn-continue" onclick="closeCart()">Continue Shopping</button>`;
 }
 
@@ -171,6 +171,8 @@ function updateNav(page) {
     nav.classList.remove('over-hero');
     nav.classList.add('scrolled');
   }
+  // Hide navbar entirely on checkout for a cleaner look
+  nav.style.display = page === 'checkout' ? 'none' : 'flex';
 }
 
 // ── Scroll: navbar transparency ────────────────────
@@ -199,6 +201,156 @@ function observeReveals() {
   items.forEach(el => io.observe(el));
 }
 
+// ── Checkout: open page ────────────────────────────
+function proceedToCheckout() {
+  closeCart();
+  goTo('checkout');
+  renderSummary();
+  goToStep(1);
+
+  // Wire shipping option UI toggle
+  document.querySelectorAll('.shipping-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.shipping-option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      opt.querySelector('input').checked = true;
+      renderSummary();
+    });
+  });
+}
+
+// ── Checkout: step navigation ──────────────────────
+function goToStep(n) {
+  // Panels
+  document.querySelectorAll('.checkout-step-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('checkout-step-' + n);
+  if (panel) panel.classList.add('active');
+
+  // Step indicators
+  document.querySelectorAll('.step').forEach((s, i) => {
+    s.classList.toggle('active', i + 1 <= n);
+    s.classList.toggle('done',   i + 1 < n);
+  });
+
+  // Build review summary on step 3
+  if (n === 3) buildReview();
+
+  window.scrollTo(0, 0);
+}
+
+// ── Checkout: payment method tabs ─────────────────
+function selectPayMethod(btn) {
+  document.querySelectorAll('.pay-method').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.pay-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('pay-' + btn.dataset.method).classList.add('active');
+}
+
+// ── Checkout: card number formatter ───────────────
+function formatCardNumber(input) {
+  let v = input.value.replace(/\D/g, '').substring(0, 16);
+  input.value = v.replace(/(.{4})/g, '$1 ').trim();
+}
+
+function formatExpiry(input) {
+  let v = input.value.replace(/\D/g, '').substring(0, 4);
+  if (v.length >= 3) v = v.substring(0, 2) + ' / ' + v.substring(2);
+  input.value = v;
+}
+
+// ── Checkout: build review panel ──────────────────
+function buildReview() {
+  const firstName = document.getElementById('first-name').value || '—';
+  const lastName  = document.getElementById('last-name').value  || '';
+  const address1  = document.getElementById('address1').value   || '—';
+  const city      = document.getElementById('city').value       || '—';
+  const pin       = document.getElementById('pin').value        || '—';
+  const state     = document.getElementById('state').value      || '—';
+
+  document.getElementById('review-address').textContent =
+    `${firstName} ${lastName}, ${address1}, ${city} – ${pin}, ${state}`;
+
+  const activeMethod = document.querySelector('.pay-method.active');
+  const method = activeMethod ? activeMethod.dataset.method : 'card';
+  const methodLabel = { card: 'Credit / Debit Card', upi: 'UPI', cod: 'Cash on Delivery' };
+  let payDetail = methodLabel[method] || method;
+  if (method === 'card') {
+    const num = document.getElementById('card-number').value;
+    if (num.length >= 4) payDetail += ' ···· ' + num.replace(/\s/g,'').slice(-4);
+  } else if (method === 'upi') {
+    const upi = document.getElementById('upi-id').value;
+    if (upi) payDetail += ' — ' + upi;
+  }
+  document.getElementById('review-payment').textContent = payDetail;
+
+  const express = document.querySelector('input[name="shipping"]:checked');
+  const isExpress = express && express.value === 'express';
+  document.getElementById('review-shipping').textContent =
+    isExpress ? 'Express Delivery — ₹999' : 'Standard Delivery — Free';
+}
+
+// ── Checkout: render right-side summary ───────────
+function renderSummary() {
+  const itemsEl  = document.getElementById('summary-items');
+  const totalsEl = document.getElementById('summary-totals');
+  if (!itemsEl) return;
+
+  if (cart.length === 0) {
+    itemsEl.innerHTML  = '<p class="summary-empty">No items in bag.</p>';
+    totalsEl.innerHTML = '';
+    return;
+  }
+
+  itemsEl.innerHTML = cart.map(item => `
+    <div class="summary-item">
+      <div class="summary-item-img-wrap">
+        <img src="${item.image}" alt="${item.name}" />
+        <span class="summary-qty-badge">${item.qty}</span>
+      </div>
+      <div class="summary-item-info">
+        <span class="summary-item-name">${item.name}</span>
+        <span class="summary-item-price">${formatPrice(item.priceNum * item.qty)}</span>
+      </div>
+    </div>`).join('');
+
+  const subtotal = cart.reduce((s, i) => s + i.priceNum * i.qty, 0);
+  const express  = document.querySelector('input[name="shipping"]:checked');
+  const shipping = (express && express.value === 'express') ? 999 : 0;
+  const cod      = document.querySelector('.pay-method.active')?.dataset.method === 'cod' ? 49 : 0;
+  const total    = subtotal + shipping + cod;
+
+  totalsEl.innerHTML = `
+    <div class="totals-row"><span>Subtotal</span><span>${formatPrice(subtotal)}</span></div>
+    <div class="totals-row"><span>Shipping</span><span>${shipping ? formatPrice(shipping) : 'Free'}</span></div>
+    ${cod ? `<div class="totals-row"><span>COD Fee</span><span>${formatPrice(cod)}</span></div>` : ''}
+    <div class="totals-row totals-total"><span>Total</span><span>${formatPrice(total)}</span></div>`;
+}
+
+// ── Checkout: place order ──────────────────────────
+function placeOrder() {
+  if (!document.getElementById('agree-terms').checked) {
+    alert('Please agree to the Terms & Conditions to proceed.');
+    return;
+  }
+  // Show success panel
+  document.querySelectorAll('.checkout-step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('checkout-success').classList.add('active');
+
+  // Generate order number
+  const orderId = 'MKT-' + Date.now().toString().slice(-8).toUpperCase();
+  document.getElementById('order-number').textContent = 'Order ' + orderId;
+
+  // Update all step indicators to done
+  document.querySelectorAll('.step').forEach(s => { s.classList.add('done'); s.classList.remove('active'); });
+
+  // Clear cart
+  cart = [];
+  updateCartCount();
+  renderCartDrawer();
+
+  window.scrollTo(0, 0);
+}
+
 // ── Init ───────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   renderCards(document.getElementById('market-grid-home'), products.slice(0, 4));
@@ -206,12 +358,12 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCartCount();
 
   const hash = window.location.hash.replace('#', '');
-  if (hash && ['home', 'collection', 'campaign'].includes(hash)) {
+  if (hash && ['home', 'collection', 'campaign', 'checkout'].includes(hash)) {
     goTo(hash);
   }
 });
 
 window.addEventListener('popstate', () => {
   const hash = window.location.hash.replace('#', '') || 'home';
-  goTo(hash);
+  if (['home', 'collection', 'campaign', 'checkout'].includes(hash)) goTo(hash);
 });
